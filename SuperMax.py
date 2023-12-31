@@ -1,5 +1,5 @@
 '''
-github enabled
+github enabled!!!
 This project simulates the card reader security on campus. The object of this application is to showcase how a 
 CAU affiliate (student, faculty,staff) can access CAU's Athletic facilities based on their credentials.
 
