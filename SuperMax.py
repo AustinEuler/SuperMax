@@ -731,6 +731,35 @@ class Scenarios:
     total = None
     conclusion = None
 
+    '''
+    hoursLegend = {
+        "legend":
+        0 - midnight
+            1 [1,"am"]
+            2 [2, "am"]
+            3 - 3 am
+            4 - 4 am
+            5 - 5 am
+            6 - 6 am
+            7 - 7 am
+            8 - 8 am
+            9 - 9 am
+            10 - 10 am
+            11 - 11 am
+            12 - 12 pm
+            13 - 1 pm
+            14 - 2 pm
+            15 - 3 pm
+            16 - 4 pm
+            17 - 5 pm
+            18 - 6 pm
+            19 - 7 pm
+            20 - 8 pm
+            21 - 9 pm
+            22 - 10 pm
+            23 - 11 pm
+    }
+    '''
 
     def start(self):
         print("----------------------------------------------------------------")
@@ -801,52 +830,32 @@ class Scenarios:
 
     
     #start of a scenario
+    
+    #converts army time to a usable am/pm time
+    def hourConverter(TOD):
+        if (TOD > 0) and (TOD < 12):
+            describer = "am"
+        elif TOD > 11:
+            describer = "pm"
+        elif TOD == 0:
+            describer = "midnight"
+        else:
+            describer = "ERROR"
+        return describer
+
 
     def chooseTOD(self):
 
         #time of day
         TOD = random.randint(0,23)
-        describer = None
-        '''
-        0 - midnight
-        1 - 1 am
-        2 - 2 am
-        3 - 3 am
-        4 - 4 am
-        5 - 5 am
-        6 - 6 am
-        7 - 7 am
-        8 - 8 am
-        9 - 9 am
-        10 - 10 am
-        11 - 11 am
-        12 - 12 pm
-        13 - 1 pm
-        14 - 2 pm
-        15 - 3 pm
-        16 - 4 pm
-        17 - 5 pm
-        18 - 6 pm
-        19 - 7 pm
-        20 - 8 pm
-        21 - 9 pm
-        22 - 10 pm
-        23 - 11 pm
-        '''
 
-        if (TOD > 0) and (TOD < 12):
-            describer = "am"
-        if TOD > 11:
-            describer = "pm"
-        if TOD == 0:
-            describer = "midnight"
-        else:
-            pass
+        describer = Scenarios.hourConverter(TOD)
+
 
 
         if TOD == 0:
             Scenarios.tempTime = [12,describer]
-        if TOD > 12:
+        elif TOD > 12:
             Scenarios.tempTime = [(TOD - 12),describer]
         else:
             Scenarios.tempTime = [TOD,describer]
@@ -875,7 +884,7 @@ class Scenarios:
             interior = random.choice(Campus.workingLocations[Scenarios.chosenFacility][0]["interiorAccess"])
             Scenarios.accessPointsUsed = [exterior,interior]
             Scenarios.total = len(Scenarios.accessPointsUsed)
-
+            Scenarios.displayFacilityHours(self)
             Scenarios.createPrompt(self)
             
 
@@ -903,6 +912,19 @@ class Scenarios:
         print("Prompt: \n")
         print(Scenarios.prompt)
         Scenarios.calculateResults(self)
+
+
+    #prints the hours for each affiliation
+    def displayFacilityHours(self):
+        print("--------------------------------------------------------")
+        print("                    Facility Hours                      ")
+        print("--------------------------------------------------------")
+
+        print(f" Facility Name: {Scenarios.chosenFacility}")
+        #print(Campus.accessTimes[Scenarios.chosenFacility])
+
+        print("--------------------------------------------------------")
+
 
 
     def calculateResults(self):
