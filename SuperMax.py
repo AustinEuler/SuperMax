@@ -300,7 +300,7 @@ class Campus:
                                             "WeightRoom":timeslots["BusinessHours"],
                                             "FBOffices":timeslots["BusinessHours"],
                                             "MultipurposeRoom":timeslots["BusinessHours"],
-                                            "FrontParkingEntrance":timeslots['ExtendedBusinessHours'],
+                                        "FrontParkingEntrance":timeslots['ExtendedBusinessHours'],
                                             "MiddleTunnel": timeslots['ExtendedBusinessHours'],
                                             "BackParkingEntrance":timeslots['ExtendedBusinessHours']},
                                     'CC':{"FBLockerRoom":timeslots["NoAccess"],
@@ -860,11 +860,10 @@ class Scenarios:
         else:
             Scenarios.tempTime = [TOD,describer]
 
+
         Scenarios.currentTime = [TOD,describer] #set current time
         print("Time of day set ....")
         Scenarios.chooseFacility(self)
-
-
 
     
     def chooseFacility(self):
@@ -884,7 +883,6 @@ class Scenarios:
             interior = random.choice(Campus.workingLocations[Scenarios.chosenFacility][0]["interiorAccess"])
             Scenarios.accessPointsUsed = [exterior,interior]
             Scenarios.total = len(Scenarios.accessPointsUsed)
-            Scenarios.displayFacilityHours(self)
             Scenarios.createPrompt(self)
             
 
@@ -905,25 +903,94 @@ class Scenarios:
         print("Prompt created ....")
         Scenarios.displayPrompt(self)
 
+    #displays the prompt and a legend for the facility hours
     def displayPrompt(self):
         time.sleep(1)
         clearScreen()
+        Scenarios.displayFacilityHours(self)
         print()
-        print("Prompt: \n")
+        print("----------------------------------------------------------------")
+        print("                             Prompt                             ")
+        print("----------------------------------------------------------------")
+        print()
         print(Scenarios.prompt)
         Scenarios.calculateResults(self)
 
 
     #prints the hours for each affiliation
     def displayFacilityHours(self):
-        print("--------------------------------------------------------")
-        print("                    Facility Hours                      ")
-        print("--------------------------------------------------------")
+        tempAffiliations = Campus.accessTimes['Stadium'].keys()
+        tempAccessPoints = Campus.accessTimes['Stadium']['General'].keys()
+        tempAthleteNames = Campus.accessTimes['Stadium']['Athlete'].keys()
+        accessPoints = []
+        affiliations = []
+        athleteNames = []
+        #converts the view objects to a usable list
+        for name in tempAccessPoints:
+            accessPoints.append(name)
+        for name in tempAffiliations:
+            affiliations.append(name)
+        for name in tempAthleteNames:
+            athleteNames.append(name)
+
+        '''
+        describer = Scenarios.hourConverter(TOD)
+
+        if TOD == 0:
+            Scenarios.tempTime = [12,describer]
+        elif TOD > 12:
+            Scenarios.tempTime = [(TOD - 12),describer]
+        else:
+            Scenarios.tempTime = [TOD,describer]
+        '''
+
+
+
+        print("----------------------------------------------------------------")
+        print("                         Facility Hours                         ")
+        print("----------------------------------------------------------------")
 
         print(f" Facility Name: {Scenarios.chosenFacility}")
-        #print(Campus.accessTimes[Scenarios.chosenFacility])
+        print()
+        for af in accessPoints:
+            print("------------------")
+            print(f"Access Point: {af} ")
+            print()
+            for ap in affiliations:
+                if ap == "Athlete":
+                    print(f"{ap}: Varied Facility and Sport-Specific Access" )
+                    '''
+                    for sport in athleteNames:
+                        print(f"{sport}: {Campus.accessTimes['Stadium'][ap][sport][af]}")
+                    '''
+                else:
+                    if Campus.accessTimes['Stadium'][ap][af][0] != 'NA':
+                        start = Campus.accessTimes['Stadium'][ap][af][0]
+                        end = Campus.accessTimes['Stadium'][ap][af][-1]
+                        combo = [start,end]
 
-        print("--------------------------------------------------------")
+                        timeframe = []
+                        #there is too much going on here, but it works. Streamline Later
+                        for num in combo:
+                            describer = Scenarios.hourConverter(num)
+
+                            if num == 0:
+                                string = f"{str(12)} {describer}"
+                                timeframe.append(string)
+                            elif num > 12:
+                                string = f"{str(num - 12)} {describer}"
+                                timeframe.append(string)
+                            else:
+                                string = f"{str(num)} {describer}"
+                                timeframe.append(string)
+                        print(f"{ap}: {timeframe[0]} - {timeframe[1]}")
+                    else:
+                        print(f"{ap}: No Access")
+                    
+
+                    #print(f"{ap}: {Campus.accessTimes['Stadium'][ap][af]}")
+            
+        #print(Campus.accessTimes[Scenarios.chosenFacility])
 
 
 
